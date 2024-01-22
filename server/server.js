@@ -1,44 +1,57 @@
-const mongoose = require('mongoose');
+require('dotenv').config();
 const express = require('express');
-var cors = require('cors');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
-const routes = require('./routes/routes');
-const path = require('path');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const session = require('express-session');
+const path = require('path'); // Add this line
+// require('./passport-setup');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 
-const API_PORT = 5000;
 const app = express();
-app.use(cors());
 
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-// // this is our MongoDB database
-// const dbRoute =
-//   'mongodb://<your-db-username-here>:<your-db-password-here>@ds249583.mlab.com:49583/fullstack_app';
+app.use(express.json());
 
-// // connects our back end code with the database
-// mongoose.connect(dbRoute, { useNewUrlParser: true });
+app.use(cors({
+    origin: 'http://localhost:3000', // URL of your React frontend application
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'] // Allow specific headers
+}));
 
-// let db = mongoose.connection;
-
-// db.once('open', () => console.log('connected to the database'));
-
-// checks if connection with the database is successful
-// db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-// (optional) only made for logging and
-// bodyParser, parses the request body to be a readable json format
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(logger('dev'));
-
-// Serve the static files from the React app
-app.use(express.static(path.join(__dirname, 'client/')));
-
-// append /api for our http requests
-app.use('/api', routes);
+app.use(session({
+    secret: 'your_session_secret',
+    resave: false,
+    saveUninitialized: false,
+}));
 
 
 
-// launch our backend into a port
-app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '/../client/build'))); // Adjust if your build folder differs
+
+app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
+app.use('/order', orderRoutes);
+
+app.use((req, res, next) => {
+  console.log("Incoming request:", req.method, req.url);
+  console.log("Headers:", req.headers);
+  next();
+});
+
+// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/../client/build/index.html'));
+});
+
+app.listen(process.env.PORT || 5001, () => {
+  console.log(`Server is running on port: ${process.env.PORT || 5001}`);
+});

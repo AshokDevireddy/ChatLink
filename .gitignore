@@ -88,3 +88,6 @@ typings/
 .dynamodb/
 package-lock.json
 server/.DS_Store
+
+
+.env
