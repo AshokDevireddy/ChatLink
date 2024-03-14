@@ -60,6 +60,10 @@ function BusinessDashboard() {
 
   }, [token]);
 
+  const isValidUPSTrackingNumber = (trackingNumber) => {
+    return /^1Z[0-9A-Z]{16}$/.test(trackingNumber);
+  };
+
 
   const handleLogout = () => {
     logout();
@@ -67,11 +71,54 @@ function BusinessDashboard() {
   };
 
   const handleUpdateTrackingNumber = (orderId, trackingNumber) => {
-    axios.patch(`/api/orders/${orderId}`, { trackingNumber })
+    if (!isValidUPSTrackingNumber(trackingNumber)) {
+      alert('Invalid UPS tracking number format.');
+      return;
+    }
+
+    // Find the order to update
+    const orderToUpdate = orders.find(order => order._id === orderId);
+    if (!orderToUpdate) {
+      console.error('Order not found');
+      return;
+    }
+
+    // Set up your Axios config
+    const config_patch = {
+      method: 'patch',
+      url: `http://localhost:5001/order/${orderId}`, // Update with your actual URL
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      data: {
+        trackingNumber
+      }
+    };
+
+    // Call your API to update the tracking number
+    axios(config_patch)
       .then(response => {
         setOrders(orders.map(order => order._id === orderId ? { ...order, trackingNumber: response.data.trackingNumber } : order));
+        // Now send the text message
+        const config_text = {
+          method: 'post',
+          url: 'http://localhost:5001/user/send-text', // Update with your actual URL
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          data: {
+            to: orderToUpdate.phoneNumber, // Ensure this is in E.164 formatting
+            body: `Your order has been shipped. Tracking number: ${trackingNumber}`
+          }
+        };
+        return axios(config_text);
       })
-      .catch(error => console.error('Error updating tracking number', error));
+      .then(response => {
+        console.log('Text message sent!', response.data);
+      })
+      .catch(error => {
+        console.error('Error updating tracking number or sending text', error);
+      });
   };
 
   const uniqueLinkURL = `http://localhost:3000/order/${uniqueLink}`;
@@ -95,6 +142,8 @@ function BusinessDashboard() {
             <tr>
               <th>Customer Name</th>
               <th>Address</th>
+              <th>Phone Number</th>
+              <th>Email</th>
               <th>Payment Amount</th>
               <th>Order Specification</th>
               <th>Tracking Number</th>
@@ -106,6 +155,8 @@ function BusinessDashboard() {
               <tr key={order._id}>
                 <td>{order.customerName}</td>
                 <td>{order.address}</td>
+                <td>{order.phoneNumber}</td>
+                <td>{order.email}</td>
                 <td>{order.paymentAmount}</td>
                 <td>{order.orderSpecification}</td>
                 <td>

@@ -20,13 +20,15 @@ router.get('/table/:uniqueLink', auth, async (req, res) => {
 // Endpoint to handle order submission
 router.post('/submit', async (req, res) => {
   try {
-    const { customerName, address, paymentAmount, orderSpecification, uniqueLink } = req.body;
+    const { customerName, address, phoneNumber, email, paymentAmount, orderSpecification, uniqueLink } = req.body;
 
     console.log("Received order submission:", req.body);
 
     const newOrder = new Order({
       customerName,
       address,
+      phoneNumber,
+      email,
       paymentAmount,
       orderSpecification,
       uniqueLink: uniqueLink, // Assign the unique link from the URL

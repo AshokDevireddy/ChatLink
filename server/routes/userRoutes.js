@@ -4,6 +4,9 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const router = express.Router();
 const Order = require('../models/Order');
+require('dotenv').config();
+const twilio_client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
 
 
 router.get('/', async (req, res) => {
@@ -77,5 +80,23 @@ router.get('/details', auth, async (req, res) => {
 });
 
 // Add more routes as necessary
+router.post('/send-text', (req, res) => {
+  const { to, body } = req.body;
+  console.log(to, body)
+
+  twilio_client.messages.create({
+    body: body,
+    from: process.env.TWILIO_NUMBER, // Your Twilio number
+    to: to // Number to send SMS to
+  })
+  .then(message => {
+    console.log(message.sid);
+    res.send({ message: 'Message sent!', sid: message.sid });
+  })
+  .catch(error => {
+    console.error(error);
+    res.status(500).send({ error: 'Failed to send message' });
+  });
+});
 
 module.exports = router;

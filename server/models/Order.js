@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require('uuid');
 const orderSchema = new mongoose.Schema({
   customerName: { type: String, required: true },
   address: { type: String, required: true },
+  phoneNumber: { type: String, required: true },
+  email: { type: String, required: true },
   paymentAmount: { type: Number, required: true },
   orderSpecification: String,
   trackingNumber: { type: String, default: '' },

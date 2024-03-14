@@ -1,0 +1,59 @@
+/* This is the container for the entire page */
+.order-submission-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  padding: 0 20px; /* Add some padding around the edges */
+}
+
+/* This is the styling for the form itself */
+.order-form {
+  width: 100%;
+  max-width: 400px; /* Set a max-width for larger screens */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Increase gap for better visual separation */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow around the form */
+  padding: 20px;
+  border-radius: 5px; /* Optional: Rounds the corners of the form */
+  background: #fff; /* Optional: Sets a white background for the form */
+}
+
+/* Error message styling */
+.error {
+  color: red;
+  text-align: center; /* Centers the error message text */
+}
+
+/* Form field group styling */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input field styling */
+.form-group input,
+.form-group textarea {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Button styling */
+.submit-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s; /* Adds a transition effect on hover */
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+/* Make sure this matches your JSX structure. If you don't have elements with these classes, add them accordingly. */

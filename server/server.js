@@ -41,11 +41,11 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/order', orderRoutes);
 
-app.use((req, res, next) => {
-  console.log("Incoming request:", req.method, req.url);
-  console.log("Headers:", req.headers);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log("Incoming request:", req.method, req.url);
+//   console.log("Headers:", req.headers);
+//   next();
+// });
 
 // The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
 app.get('*', (req, res) => {
