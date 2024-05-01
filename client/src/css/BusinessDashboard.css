@@ -1,47 +1,100 @@
 .dashboard-container {
-    width: 80%;
-    margin: auto;
-    text-align: center;
-  }
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
 
-  .table-container {
-    margin-top: 20px;
-    overflow-x: auto;
-  }
+.dashboard-header span {
+  font-size: 20px;
+  font-weight: bold;
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+.dashboard-header div {
+  text-align: right;
+}
 
-  table, th, td {
-    border: 1px solid black;
-  }
+.dashboard-header a {
+  color: #0654ba;
+  text-decoration: none;
+}
 
-  th, td {
-    padding: 10px;
-    text-align: left;
-  }
+.dashboard-header button {
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
 
-  th {
-    background-color: #f2f2f2;
-  }
+.dashboard-header button:hover {
+  background-color: #d32f2f;
+}
 
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
+.table-container {
+  background-color: #f9f9f9;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin-top: 20px;
+}
 
-  tr:hover {
-    background-color: #ddd;
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  button {
-    cursor: pointer;
-  }
+table thead {
+  background-color: #f0f0f0;
+}
+
+table thead th {
+  text-align: left;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+}
+
+table tbody td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+table tbody tr:hover {
+  background-color: #eaeaea;
+}
+
+table input[type="text"] {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+}
+
+table button {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+table button:hover {
+  background-color: #45a049;
+}

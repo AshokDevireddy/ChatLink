@@ -6,6 +6,7 @@ const router = express.Router();
 const Order = require('../models/Order');
 require('dotenv').config();
 const twilio_client = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const nodemailer = require('nodemailer');
 
 
 
@@ -80,22 +81,36 @@ router.get('/details', auth, async (req, res) => {
 });
 
 // Add more routes as necessary
-router.post('/send-text', (req, res) => {
+router.post('/send-email', (req, res) => {
   const { to, body } = req.body;
-  console.log(to, body)
 
-  twilio_client.messages.create({
-    body: body,
-    from: process.env.TWILIO_NUMBER, // Your Twilio number
-    to: to // Number to send SMS to
-  })
-  .then(message => {
-    console.log(message.sid);
-    res.send({ message: 'Message sent!', sid: message.sid });
-  })
-  .catch(error => {
-    console.error(error);
-    res.status(500).send({ error: 'Failed to send message' });
+  // Create reusable transporter object using SMTP transport
+  let transporter = nodemailer.createTransport({
+    service: 'gmail', // For example, using Gmail. You can use another service
+    auth: {
+      user: process.env.EMAIL_USER, // Your email
+      pass: process.env.EMAIL_PASS, // Your email password
+    },
+  });
+
+  // Setup email data
+  let mailOptions = {
+    from: process.env.EMAIL_USER, // sender address
+    to: to, // list of receivers
+    subject: 'Order Update', // Subject line
+    text: body, // plain text body
+    // html: "<b>Hello world?</b>", // You can also use HTML body
+  };
+
+  // Send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send({ error: 'Failed to send email' });
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.send({ message: 'Email sent!', id: info.messageId });
+    }
   });
 });
 

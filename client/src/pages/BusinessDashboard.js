@@ -99,19 +99,31 @@ function BusinessDashboard() {
     axios(config_patch)
       .then(response => {
         setOrders(orders.map(order => order._id === orderId ? { ...order, trackingNumber: response.data.trackingNumber } : order));
-        // Now send the text message
-        const config_text = {
+        // // Now send the text message
+        // const config_text = {
+        //   method: 'post',
+        //   url: 'http://localhost:5001/user/send-text', // Update with your actual URL
+        //   headers: {
+        //     'Authorization': `Bearer ${token}`
+        //   },
+        //   data: {
+        //     to: orderToUpdate.phoneNumber, // Ensure this is in E.164 formatting
+        //     body: `Your order has been shipped. Tracking number: ${trackingNumber}`
+        //   }
+        // };
+        // Now send the email
+        const config_email = {
           method: 'post',
-          url: 'http://localhost:5001/user/send-text', // Update with your actual URL
+          url: 'http://localhost:5001/user/send-email', // Updated URL
           headers: {
             'Authorization': `Bearer ${token}`
           },
           data: {
-            to: orderToUpdate.phoneNumber, // Ensure this is in E.164 formatting
-            body: `Your order has been shipped. Tracking number: ${trackingNumber}`
+            to: orderToUpdate.email, // Use the recipient's email address
+            body: `Your order has been shipped. Tracking number: ${response.data.trackingNumber}`
           }
         };
-        return axios(config_text);
+        return axios(config_email);
       })
       .then(response => {
         console.log('Text message sent!', response.data);
